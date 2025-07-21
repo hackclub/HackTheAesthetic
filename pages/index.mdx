@@ -2,8 +2,70 @@ import { Container } from 'theme-ui'
 
 <Container>
 
-# Hello!
+# Hack The Aesthetic!
 
-You’re using the [Hack Club Theme Starter](https://github.com/hackclub/theme-starter).
+If your anything like me, you'll have a folder of projects that you wrote once and never looked at again. Want to write code that you will appreciate every day? Hack The Aesthetic is a Hack Club YSWS all about that! I want you to create a script that customises your Desktop Background, it could make the background reflect the weather, change with the time of day or add special text like a countdown! You'll make your digital work space super smart AND as a reward we will ship you a lovely poster or stickers to decorate your physical work space.
+
+Ideas:
+  -Use the [NASA API](https://worldview.earthdata.nasa.gov/) to have your wallpaper show the latest images of eath from space
+  -Use [Python Imaging Library](https://pillow.readthedocs.io/en/stable/) to add text, putting your calendar straight on your wallpaper
+
+
+Please track your code with Hackatime (https://hackatime.hackclub.com/) and if you get stuck check the #HackTheAesthetic channel or message me directly! I'll run help sessions and am always on the other end of a dm. This YSWS is only running until Monday 28th, so get your submissions in fast!
+
+Check out the template code below, which uses an API to get a random picture of a cat and adds a custom message based on the time of day. This could be a good starting place or usefull if you find yourself stuck, but please don't submit my own code back to me with only a couple of lines changed. I'm looking for something creative or technically impressive!
+
+<code>
+
+###Imports###
+from datetime import datetime
+import PIL#Python Imaging Library is used to read and modify the images used
+import os#used for interacting safely with the operating system to access my secret (environmental) variable
+import ctypes #ctypes is used specifically to change the wallpaper
+import requests #used to get cat images for the background
+import urllib.request#used to download an image from a URL (uniform resource locator)
+
+###Constants###
+imagePath = 'C:/Users/euanr/OneDrive/Desktop/wallpaper.png'#Replace with the DIRECT file path to your wallpaper, also replace any instance of "/" with "\"
+SPI_SETDESKWALLPAPER = 20#tells the windows API you want to perform the 20th function, which is changing a wallpaper
+APIKey = os.getenv("CatAPI") #Please don't upload your code with the API key written in here
+url = 'https://api.thecatapi.com/v1/images/search'#used in conjunction with my key to fetch cats
+
+def setWallpaper(imagePath):
+    ctypes.windll.user32.SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, os.path.abspath(imagePath).encode() , 0)#this is the one liner to set a wallpaper
+
+def getCurrentHour():
+    current_datetime = datetime.now()#get current time and date as one
+    return(str(current_datetime.time())[0:2])#take the time element and splice out the hour (taking the first two characters in the format HH:MM:SS)
+    
+
+#generate a message to add to the wallpaper based on the current time
+hour = int(getCurrentHour()) #get the current hour in 24hr format, stored as an integer number.
+if hour > 0 and hour < 5:
+    message = "Go to sleep!!"
+elif hour < 12:
+    message = "have a good morning!"
+elif hour < 18:
+    message = "have a good afternoon!"
+else:
+    message = "have a good evening!"
+    
+def fetchARandomCat(APIKey,imagePath):#use my CatAPI key to fetch a cat picture
+    headers = {
+    'x-api-key': APIKey#append my key to the request
+    }
+    response = requests.get(url, headers=headers)#send a request to CatAPI
+    if response.status_code == 200:#200 means request was served by the server correctly
+        catPic=response.json()
+        URL=catPic[0].get('url')#access the URL from the dictionary the request returns
+        urllib.request.urlretrieve(URL, imagePath)
+    else:
+        print(response.status_code)
+
+fetchARandomCat(APIKey,imagePath)
+setWallpaper(imagePath)
+
+
+</code>
 
 </Container>
