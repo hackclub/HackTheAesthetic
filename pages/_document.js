@@ -10,6 +10,7 @@ export default class extends Document {
   render() {
     return (
       <Html lang="en">
+      <title>Hack the aesthetic</title >
         <Head />
         <body>
           <InitializeColorMode />
