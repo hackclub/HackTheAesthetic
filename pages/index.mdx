@@ -53,7 +53,7 @@ else:
     
 def fetchARandomCat(APIKey,imagePath):#use my CatAPI key to fetch a cat picture
     headers = {
-    'x-api-key': APIKey#append my key to the request
+    "x-api-key": APIKey#append my key to the request
     }
     response = requests.get(url, headers=headers)#send a request to CatAPI
     if response.status_code == 200:#200 means request was served by the server correctly
